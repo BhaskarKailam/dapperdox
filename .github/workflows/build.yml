@@ -10,29 +10,30 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Setup Go
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
 
-      # Fix broken dependency case issue
-      - name: Fix GoConvey dependency
+      # 🔥 Fix GoConvey conflict permanently
+      - name: Fix dependency conflict
         run: |
           go mod init dapperdox || true
+
           go mod edit -replace github.com/smartystreets/GoConvey=github.com/smartystreets/goconvey@v1.8.1
 
-      # Download dependencies
-      - name: Download dependencies
-        run: go mod tidy
+          go mod edit -replace github.com/smartystreets/goconvey=github.com/smartystreets/goconvey@v1.8.1
 
-      # Build
+      # ⚠️ IMPORTANT: avoid test-only dependency failure
+      - name: Download dependencies (ignore test issues)
+        run: go mod tidy -e
+
+      # Build only main binary (skip tests)
       - name: Build project
-        run: go build -o dapperdox.exe .
+        run: go build -tags netgo -o dapperdox.exe .
 
       # Upload artifact
       - name: Upload artifact
