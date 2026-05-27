@@ -9,32 +9,25 @@ jobs:
   build:
     runs-on: windows-latest
 
+    env:
+      GO111MODULE: off
+
     steps:
-      # Step 1: Checkout repo
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup Go
+      # Setup Go
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
 
-      # Step 3: Check Go module (SAFE - avoids failure)
-      - name: Check Go module
-        shell: pwsh
-        run: |
-          if (Test-Path "go.mod") {
-            echo "go.mod found"
-          } else {
-            echo "go.mod NOT found - skipping go mod tidy"
-          }
-
-      # Step 4: Build project (MAIN STEP)
+      # Build project (GOPATH mode)
       - name: Build project
         run: go build -o dapperdox.exe .
 
-      # Step 5: Upload artifact
+      # Upload artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
