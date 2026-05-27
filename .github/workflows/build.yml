@@ -13,7 +13,7 @@ jobs:
       GO111MODULE: off
 
     steps:
-      # Checkout code
+      # Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -23,7 +23,18 @@ jobs:
         with:
           go-version: '1.22'
 
-      # Build project (GOPATH mode)
+      # Install dependencies manually (IMPORTANT)
+      - name: Install dependencies
+        run: |
+          go get github.com/gorilla/pat
+          go get github.com/justinas/alice
+          go get github.com/justinas/nosurf
+          go get github.com/go-openapi/loads
+          go get github.com/go-openapi/spec
+          go get github.com/serenize/snaker
+          go get github.com/shurcooL/github_flavored_markdown
+
+      # Build project
       - name: Build project
         run: go build -o dapperdox.exe .
 
