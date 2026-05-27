@@ -9,36 +9,27 @@ jobs:
   build:
     runs-on: windows-latest
 
-    env:
-      GO111MODULE: off
-
     steps:
-      # Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Setup Go
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
 
-      # Install dependencies manually (IMPORTANT)
-      - name: Install dependencies
+      - name: Initialize modules (if missing)
         run: |
-          go get github.com/gorilla/pat
-          go get github.com/justinas/alice
-          go get github.com/justinas/nosurf
-          go get github.com/go-openapi/loads
-          go get github.com/go-openapi/spec
-          go get github.com/serenize/snaker
-          go get github.com/shurcooL/github_flavored_markdown
+          if (-not (Test-Path go.mod)) {
+            go mod init dapperdox
+          }
 
-      # Build project
+      - name: Download dependencies
+        run: go mod tidy
+
       - name: Build project
         run: go build -o dapperdox.exe .
 
-      # Upload artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
