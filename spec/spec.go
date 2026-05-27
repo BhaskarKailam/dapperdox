@@ -156,6 +156,7 @@ type Parameter struct {
 	Enum                        []string
 	Resource                    *Resource // For "in body" parameters
 	IsArray                     bool      // "in body" parameter is an array
+	Example                     string
 }
 
 // Response represents an API method response
